@@ -1,13 +1,14 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"log"
 	"net/http"
 	"strings"
 
-	"github.com/friendlyhank/groupcache-annotated"
+	"github.com/golang/groupcache"
 )
 
 //相当于DB
@@ -17,9 +18,9 @@ var Store = map[string][]byte{
 	"blue":  []byte("#0000FF"),
 }
 
-//读取数据元并设置缓存
+//读取数据源并设置缓存
 var Group = groupcache.NewGroup("foobar", 64<<20, groupcache.GetterFunc(
-	func(ctx groupcache.Context, key string, dest groupcache.Sink) error {
+	func(ctx context.Context, key string, dest groupcache.Sink) error {
 		log.Println("looking up", key)
 		v, ok := Store[key]
 		if !ok {
